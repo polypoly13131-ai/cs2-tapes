@@ -1,0 +1,45 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CS2 game tapes</title><style>
+:root{--bg:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--grid:rgba(11,11,11,.1);
+--series:#2a78d6;--live:#008300}
+@media(prefers-color-scheme:dark){:root{--bg:#1a1a19;--ink:#fff;
+--ink2:#c3c2b7;--grid:rgba(255,255,255,.12);--series:#3987e5;--live:#1baf7a}}
+body{background:var(--bg);color:var(--ink);margin:0;padding:26px 18px;
+font:14px -apple-system,ui-sans-serif,sans-serif}
+.w{max-width:900px;margin:0 auto}h1{font-size:20px;margin:0 0 4px}
+.sub{color:var(--ink2);font-size:12.5px;margin:0 0 18px}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--grid);
+font-size:13px}th{color:var(--ink2);font-weight:600}
+td.num,th.num{text-align:right}
+a{color:var(--series);text-decoration:none}a:hover{text-decoration:underline}
+.ev{color:var(--ink2);font-size:12px}
+.foot{color:var(--ink2);font-size:12px;margin-top:16px}
+</style></head><body><div class="w">
+<h1>CS2 game tapes</h1>
+<p class="sub">every recorded Counter-Strike match: round-by-round scores vs
+the Polymarket price ·
+<a href="https://polypoly13131-ai.github.io/lol-tapes/">LoL tapes →</a></p>
+<div style="overflow-x:auto"><table><thead><tr><th>match</th><th>event</th>
+<th>date</th><th class="num">maps</th><th class="num">length</th><th></th>
+</tr></thead><tbody id="rows"><tr><td colspan="6">loading…</td></tr></tbody>
+</table></div>
+<p class="foot" id="gen"></p></div>
+<script>
+async function load(){
+  let d;
+  try{d=await (await fetch("data/index.json")).json()}
+  catch(e){document.getElementById("rows").innerHTML=
+    "<tr><td colspan='6'>could not load the tape index</td></tr>";return}
+  document.getElementById("rows").innerHTML = d.games.map(g =>
+    `<tr><td>${g.match}</td><td class="ev">${g.event}</td>` +
+    `<td>${g.date}</td><td class="num">${g.maps}</td>` +
+    `<td class="num">${g.dur?Math.floor(g.dur/60)+" min":"—"}</td>` +
+    `<td><a href="tape.html?gid=${g.gid}">view tape</a></td></tr>`).join("");
+  document.getElementById("gen").textContent =
+    "snapshot generated "+d.generated+" · scores from bo3.gg at ~30-second "+
+    "resolution, prices from Polymarket order books";
+}
+load();
+</script></body></html>
